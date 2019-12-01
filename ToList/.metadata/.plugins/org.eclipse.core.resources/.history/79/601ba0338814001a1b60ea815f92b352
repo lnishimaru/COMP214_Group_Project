@@ -1,0 +1,329 @@
+package application;
+
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.sql.Types;
+import oracle.jdbc.*;
+
+
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+
+public class MainScreenController {
+
+    @FXML
+    private Button expiringButton;
+
+    @FXML
+    private TextField listingIdTxtField;
+
+    @FXML
+    private TextField statusResultTxtField;
+
+    @FXML
+    private Button agentDetailsButton;
+
+    @FXML
+    private TextField agentIdTxtField;
+
+    @FXML
+    private TextField agentDetailsResultTxtField;
+    
+    @FXML
+    private Label messageLabel;
+
+    @FXML
+    private Button cancelAddAgentButton;
+
+    @FXML
+    private Button AddAgentButton;
+
+    @FXML
+    private TextField firstNameTxtField;
+
+    @FXML
+    private TextField phoneTxtField;
+
+    @FXML
+    private TextField lastNameTxtField;
+
+    @FXML
+    private TextField emailTxtField;
+
+    @FXML
+    private Button cancelUpdateButton;
+
+    @FXML
+    private Button UpdateButton;
+
+    @FXML
+    private TextField firstNameUpdateTxtField;
+
+    @FXML
+    private TextField phoneUpdateTxtField;
+
+    @FXML
+    private TextField lastNameAgentUpdateTxtField;
+
+    @FXML
+    private TextField emailUpdateTxtField;
+
+    @FXML
+    private TextField agentIdUpdateTxtField;
+
+    @FXML
+    private Button SearchMaxPriceButton;
+
+    @FXML
+    private TextField maxPriceTxtField;
+    @FXML
+    private Label resultLabel;
+
+    //Functions Tab
+    //Search Expiring date
+    @FXML
+    void ExpiringButtonClicked(ActionEvent event) {
+    	boolean ok = true;
+    	try {
+    		Integer.parseInt(listingIdTxtField.getText());
+		} catch (Exception e) {
+			ok = false;
+			messageLabel.setText("Please enter the Listing ID");
+		}
+    	if (ok) 
+    	{
+    		try {
+    			Connection con = DataSource.getConnection();
+    			
+    			CallableStatement cStmt = con.prepareCall("{? = call F_CHECK_EXPIRY_DATE(?)}");
+    			
+        	    cStmt.setInt(2,Integer.parseInt(listingIdTxtField.getText()));
+        	    cStmt.registerOutParameter(1, java.sql.Types.VARCHAR);
+        	    cStmt.execute();
+        	    String result = cStmt.getString(1);
+        	    
+        	    statusResultTxtField.setText(result);
+    		
+    			con.close();
+
+    		} catch (Exception e) {
+    			System.out.println(e);
+    		}
+    	}
+    	   	 
+    }
+    //Search Agent Details
+    @FXML
+    void agentDetailsButtonClicked(ActionEvent event) {
+    	boolean ok = true;
+    	try {
+    		Integer.parseInt(agentIdTxtField.getText());
+		} catch (Exception e) {
+			ok = false;
+			messageLabel.setText("Please enter the Agent ID");
+		}
+    	if (ok)
+    	{	
+    		try {
+    			Connection con = DataSource.getConnection();
+			
+    			CallableStatement cStmt = con.prepareCall("{? = call F_PRINT_AGENT(?)}");
+			
+    			cStmt.setInt(2, Integer.parseInt(agentIdTxtField.getText()));
+    			cStmt.registerOutParameter(1, java.sql.Types.VARCHAR);
+    			cStmt.execute();
+    			String result = cStmt.getString(1);
+    	    
+    			agentDetailsResultTxtField.setText(result);
+		
+    			con.close();
+
+    		} catch (Exception e) {
+    			messageLabel.setText("Connection error, please try again");
+    		}
+    	}
+    }
+
+    //Procedures
+    @FXML
+    void CancelAddAgentClicked(ActionEvent event) {
+    	firstNameTxtField.clear();
+    	lastNameTxtField.clear();
+    	phoneTxtField.clear();
+    	emailTxtField.clear();  	
+    }
+   
+    @FXML
+    void addAgentButtonClicked(ActionEvent event) {
+    	boolean ok = true;
+    	if (firstNameTxtField.getText().isEmpty() ||
+    		lastNameTxtField.getText().isEmpty()  ||
+    		phoneTxtField.getText().isEmpty()     ||
+    		emailTxtField.getText().isEmpty())
+    	{
+    		ok = false;
+    		messageLabel.setText("All fields required for insert");
+    	}
+    	if (ok)
+    	{
+    	try {
+    		Integer.parseInt(phoneTxtField.getText());
+    	} catch (Exception e) {
+			messageLabel.setText("Phone should have only numbers");
+			ok = false;
+		}
+    	}
+    	
+    	if(ok) {
+    		
+    	
+    		try {
+    			Connection con = DataSource.getConnection();
+			
+    			CallableStatement cStmt = con.prepareCall("{call P_INSERT_AGENT(?,?,?,?)}");
+			
+    			cStmt.setString(1, firstNameTxtField.getText());
+    			cStmt.setString(2, lastNameTxtField.getText());
+    			cStmt.setInt(3, Integer.parseInt(phoneTxtField.getText()));
+    			cStmt.setString(4, emailTxtField.getText());
+    			
+    			cStmt.execute();
+    	    
+    			messageLabel.setText("Agent added successfully");
+		
+    			con.close();
+
+    		} catch (Exception e) {
+    			messageLabel.setText("Error, please check the fields and try again");
+    		}
+    		
+    	}
+    	
+    }
+
+ 
+    @FXML
+    void cancelUpdateButtonClicked(ActionEvent event) {
+    	agentIdUpdateTxtField.clear();
+    	firstNameUpdateTxtField.clear();
+    	lastNameAgentUpdateTxtField.clear();
+    	phoneUpdateTxtField.clear();
+    	emailUpdateTxtField.clear();
+    }
+
+    @FXML
+    void updateButtonClicked(ActionEvent event) {
+    	boolean ok = true;
+    	if (agentIdUpdateTxtField.getText().isEmpty()       ||
+    		firstNameUpdateTxtField.getText().isEmpty()     ||
+    		lastNameAgentUpdateTxtField.getText().isEmpty() ||
+    		phoneUpdateTxtField.getText().isEmpty()         ||
+    		emailUpdateTxtField.getText().isEmpty())
+    	{
+    		ok = false;
+    		messageLabel.setText("All fields required for update");
+    	}
+    	if (ok)
+    	{
+    	try {
+    		Integer.parseInt(phoneUpdateTxtField.getText());
+    	} catch (Exception e) {
+			messageLabel.setText("Invalid Phone Number");
+			ok = false;
+		}
+    	}
+    	
+    	if(ok) {
+    		
+    	
+    		try {
+    			Connection con = DataSource.getConnection();
+			
+    			CallableStatement cStmt = con.prepareCall("{call P_UPDATE_AGENT(?,?,?,?,?)}");
+			
+    			cStmt.setInt(1, Integer.parseInt(agentIdUpdateTxtField.getText()));
+    			cStmt.setString(2, firstNameUpdateTxtField.getText());
+    			cStmt.setString(3, lastNameAgentUpdateTxtField.getText());
+    			cStmt.setInt(4, Integer.parseInt(phoneUpdateTxtField.getText()));
+    			cStmt.setString(5, emailUpdateTxtField.getText());
+    			
+    			cStmt.execute();
+    	    
+    			messageLabel.setText("Agent updated successfully");
+		
+    			con.close();
+
+    		} catch (Exception e) {
+    			messageLabel.setText("Error, please check the fields and try again");
+    		}
+    		
+    	}
+    }
+    
+    @FXML
+    void clearPriceSearchButton(ActionEvent event) {
+    	maxPriceTxtField.clear();
+    }
+
+    @FXML
+    void searchMaPriceClicked(ActionEvent event) {
+    	
+
+    	boolean ok = true;
+    	if (maxPriceTxtField.getText().isEmpty())
+    	{
+    		ok = false;
+    		messageLabel.setText("Please inform a Maximum Price");
+    	}
+    	if (ok)
+    	{
+    	try {
+    		Integer.parseInt(maxPriceTxtField.getText());
+    	} catch (Exception e) {
+			messageLabel.setText("Invalid Price");
+			ok = false;
+		}
+    	}
+    	
+    	if(ok) {
+    		
+    	
+    		try {
+    			Connection con = DataSource.getConnection();
+    			CallableStatement cStmt = con.prepareCall("{call P_LIST_BELLOW_PRICE(?,?)}");
+    			cStmt.setInt(1, Integer.parseInt(maxPriceTxtField.getText()));
+    		
+    			cStmt.registerOutParameter(2,Types.REF);
+    			cStmt.registerOutParameter("OUT_REPAIR_INFO", oracle.jdbc.OracleTypes.CURSOR);
+    			ResultSet rs = null;
+    			boolean test = false;
+    			System.out.print("Aqui");
+    			test = cStmt.execute();
+    			//cStmt.execute();
+    			System.out.print("Executed");
+    			  //result = (ResultSet)cStmt.getObject(1);
+    			    System.out.println("Commissioned employees:");
+    			    while(rs.next()) 
+    			    {
+    			      System.out.println(rs.getString(1));
+    			    }
+    			//resultSet = (ResultSet) cStmt.getObject(2);
+    			messageLabel.setText("Success");
+		
+    			con.close();
+
+    		} catch (Exception e) {
+    			messageLabel.setText("Error, please check the fields and try again");
+    	    	System.out.print(e);
+    		}
+    		
+    	}
+    }
+
+}

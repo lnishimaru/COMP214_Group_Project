@@ -1,0 +1,61 @@
+package application;
+	
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.stage.Stage;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+public class Main extends Application {
+	
+	@Override
+	public void start(Stage primaryStage) {
+		try {
+			Parent root = FXMLLoader.load(getClass().getResource("MainScreen.fxml"));
+			Scene scene = new Scene(root,680,410);
+			primaryStage.setTitle("To List - Real Estate");
+			primaryStage.setScene(scene);
+			primaryStage.show();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			Connection con = DataSource.getConnection();
+
+			//------------------------------------------------------------------
+			// using statement
+			Statement statement = con.createStatement();
+			String sql = "Select * from DD_PROJECT";
+			ResultSet rs = statement.executeQuery(sql);
+			
+			while (rs.next())
+				System.out.println(rs.getInt(1) + "    " + rs.getString(2));
+
+			//------------------------------------------------------------------
+			// using PreparedStatement with parameters on SQL
+			System.out.println();
+			PreparedStatement ps = con.prepareStatement("Select * from DD_PROJECT where IDPROJ = ?");
+			ps.setInt(1, 532);
+			ResultSet rs1 = ps.executeQuery();
+
+			while (rs1.next())
+				System.out.println(rs1.getInt(1) + "    " + rs1.getString(2));
+
+			//------------------------------------------------------------------
+			con.close();
+
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+	}
+	
+	public static void main(String[] args) {
+		
+		launch(args);
+	}
+}
