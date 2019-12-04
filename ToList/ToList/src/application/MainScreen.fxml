@@ -10,6 +10,8 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -17,19 +19,16 @@
 
 <AnchorPane prefHeight="490.0" prefWidth="660.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.MainScreenController">
    <children>
-      <TabPane layoutX="14.0" layoutY="32.0" prefHeight="392.0" prefWidth="668.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane layoutY="32.0" prefHeight="392.0" prefWidth="682.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="Functions">
             <content>
-              <AnchorPane layoutY="10.0" minHeight="0.0" minWidth="0.0" prefHeight="353.0" prefWidth="691.0">
+              <AnchorPane layoutY="10.0" minHeight="0.0" minWidth="0.0" prefHeight="353.0" prefWidth="698.0">
                      <children>
-                        <GridPane hgap="5.0" layoutY="50.0" prefWidth="651.0" vgap="5.0">
+                        <GridPane hgap="5.0" layoutY="50.0" prefHeight="100.0" prefWidth="320.0" vgap="5.0">
                           <columnConstraints>
                             <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                           </columnConstraints>
                           <rowConstraints>
@@ -41,12 +40,11 @@
                               <Button fx:id="expiringButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ExpiringButtonClicked" text="Search" GridPane.columnIndex="2" />
                               <Label text="Listing ID" />
                               <Label text="Expiry Status" GridPane.rowIndex="1" />
-                              <TextField fx:id="listingIdTxtField" GridPane.columnIndex="1">
-                                 <padding>
-                                    <Insets top="10.0" />
-                                 </padding>
-                              </TextField>
-                              <TextField fx:id="statusResultTxtField" disable="true" editable="false" prefHeight="31.0" prefWidth="554.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
+                              <TextField fx:id="listingIdTxtField" GridPane.columnIndex="1" />
+                              <TextField fx:id="statusResultTxtField" editable="false" prefHeight="31.0" prefWidth="554.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <opaqueInsets>
+                                    <Insets />
+                                 </opaqueInsets></TextField>
                            </children>
                         </GridPane>
                         <GridPane hgap="5.0" layoutY="180.0" prefHeight="100.0" prefWidth="644.0" vgap="5.0">
@@ -67,16 +65,17 @@
                               <Button fx:id="agentDetailsButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#agentDetailsButtonClicked" text="Search" GridPane.columnIndex="2" />
                               <Label text="AgentID" />
                               <Label text="Agent Details" GridPane.rowIndex="1" />
-                              <TextField fx:id="agentIdTxtField" alignment="TOP_RIGHT" GridPane.columnIndex="1">
-                                 <padding>
-                                    <Insets top="10.0" />
-                                 </padding>
-                              </TextField>
-                              <TextField fx:id="agentDetailsResultTxtField" disable="true" editable="false" prefHeight="31.0" prefWidth="546.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
+                              <TextField fx:id="agentIdTxtField" alignment="TOP_RIGHT" GridPane.columnIndex="1" />
+                              <TextField fx:id="agentDetailsResultTxtField" editable="false" prefHeight="31.0" prefWidth="546.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
                            </children>
                         </GridPane>
                         <Label layoutX="5.0" layoutY="14.0" text="Listing Expiring Status" />
                         <Label layoutX="5.0" layoutY="150.0" text="Agent Details" />
+                        <ImageView fitHeight="255.0" fitWidth="315.0" layoutX="377.0" layoutY="-27.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@ToListLogo.png" />
+                           </image>
+                        </ImageView>
                      </children>
                   </AnchorPane>
             </content>
@@ -178,16 +177,11 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" text="About" />
+              <MenuItem mnemonicParsing="false" onAction="#ExitMenuClicked" text="Close" />
             </items>
           </Menu>
         </menus>
       </MenuBar>
-      <Label fx:id="messageLabel" layoutX="25.0" layoutY="441.0" text="System Message:" />
+      <Label fx:id="messageLabel" layoutX="25.0" layoutY="441.0" />
    </children>
 </AnchorPane>

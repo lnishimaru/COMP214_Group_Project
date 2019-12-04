@@ -3,6 +3,8 @@ package application;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
+
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -150,6 +152,7 @@ public class MainScreenController {
     }
 
     //Procedures
+    
     @FXML
     void CancelAddAgentClicked(ActionEvent event) {
     	firstNameTxtField.clear();
@@ -214,6 +217,7 @@ public class MainScreenController {
     	lastNameAgentUpdateTxtField.clear();
     	phoneUpdateTxtField.clear();
     	emailUpdateTxtField.clear();
+    	messageLabel.setText("");
     }
 
     @FXML
@@ -268,6 +272,8 @@ public class MainScreenController {
     @FXML
     void clearPriceSearchButton(ActionEvent event) {
     	maxPriceTxtField.clear();
+    	belowPriceTextArea.setText(" ");
+    	messageLabel.setText("");
     }
 
     @SuppressWarnings("null")
@@ -318,6 +324,7 @@ public class MainScreenController {
     			    }
     			    
     			belowPriceTextArea.setText(textArea);
+    			messageLabel.setText("");
     			con.close();
 
     		} catch (Exception e) {
@@ -326,6 +333,10 @@ public class MainScreenController {
     		}
     		
     	}
+    }
+    @FXML
+    void ExitMenuClicked(ActionEvent event) {
+    	 Platform.exit();
     }
 
 }
